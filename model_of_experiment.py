@@ -7,21 +7,50 @@ from skimage.transform import radon, iradon
 
 def process_image(image, angles, noizeProbability):
     sim = create_sinogram(angles, image)
+    print("sinogram shape: ", sim.shape)
     sim = add_noise(sim, noizeProbability)
-    rec = reconstruct(sim, angles)
-    return rec
+    rec = reconstruct(sim)
+    print("reconstruction shape: ", rec.shape)
+    return crop(rec, image.shape)
 
 
-def create_sinogram(angles, img3d):
+def crop(img, new_shape):
+    if len(new_shape)==2 and len(img.shape)==2:
+        cen_x, cen_y = np.asarray(img.shape)//2
+        x_len, y_len = np.asarray(new_shape)//2
+        cropped_img = img[(cen_x-x_len):(cen_x+x_len), (cen_y-y_len):(cen_y+y_len)]
+    elif len(new_shape)==3 and len(img.shape)==3:
+        cen_x, cen_y, cen_z = np.asarray(img.shape)//2
+        x_len, y_len, z_len = np.asarray(new_shape)//2
+        cropped_img = img[(cen_x-x_len):(cen_x+x_len), 
+                        (cen_y-y_len):(cen_y+y_len), 
+                        (cen_z-z_len):(cen_z+z_len)]
+    else:
+        print("Mistake: shape of img does not fit new shape (2 or 3)")
+        cropped_img = None
+
+    return cropped_img
+
+
+def create_sinogram(angles, img):
     set_of_angles = np.linspace(0, 180, angles, endpoint=False)
-    return np.asarray([radon(img, theta=set_of_angles, circle=False) for img in img3d])
+    if len(img.shape) == 3:
+        sim = np.asarray([radon(img_slice, theta=set_of_angles, circle=False) for img_slice in img])
+    else:
+        sim = radon(img, theta=set_of_angles, circle=False) 
+    
+    return sim
 
 
-def reconstruct(sinogram, angles, filtName='shepp-logan'):
-    set_of_angles = np.linspace(0, 180, sinogram[0].shape[1], endpoint=False)
+def reconstruct(sinogram, filt_name='shepp-logan'):
+    if len(sinogram.shape) == 3:
+        set_of_angles = np.linspace(0, 180, sinogram[0].shape[1], endpoint=False)
+        image = [iradon(s, set_of_angles, filter=filt_name) for s in sinogram]
+    else:
+        set_of_angles = np.linspace(0, 180, sinogram.shape[1], endpoint=False)
+        image = iradon(sinogram, set_of_angles, filter=filt_name)
 
-    image = [iradon(s, set_of_angles, filter=filtName) for s in sinogram]
-    image = np.asanyarray(image)
+    image = np.asarray(image)
     return image
 
 
@@ -34,17 +63,29 @@ def add_noise(image, prob):
     coef = max(np.concatenate(image, axis=None))
     output = image
     thres = 1 - prob
+
     if prob != 0:
-        for k in range(image.shape[2]):
-            for i in range(image.shape[0]):
-                for j in range(image.shape[1]):
-                    rdn = random.random()
-                    if rdn < prob:
-                        output[i][j][k] = rdn*coef
-                    elif rdn > thres:
-                        output[i][j][k] = (1-rdn)*coef
-                    else:
-                        output[i][j][k] = image[i][j][k]
+        if len(image.shape) == 3:
+            for k in range(image.shape[2]):
+                for i in range(image.shape[0]):
+                    for j in range(image.shape[1]):
+                        rdn = random.random()
+                        if rdn < prob:
+                            output[i][j][k] = rdn*coef
+                        elif rdn > thres:
+                            output[i][j][k] = (1-rdn)*coef
+                        else:
+                            output[i][j][k] = image[i][j][k]
+        else:
+            for k in range(image.shape[1]):
+                for i in range(image.shape[0]):
+                        rdn = random.random()
+                        if rdn < prob:
+                            output[i][k] = rdn*coef
+                        elif rdn > thres:
+                            output[i][k] = (1-rdn)*coef
+                        else:
+                            output[i][k] = image[i][k]
 
     return output
 
