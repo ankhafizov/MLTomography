@@ -17,11 +17,11 @@ def process_image(image, angles, noizeProbability):
 def crop(img, new_shape):
     if len(new_shape)==2 and len(img.shape)==2:
         cen_x, cen_y = np.asarray(img.shape)//2
-        x_len, y_len = np.asarray(new_shape)//2
+        x_len, y_len = np.asarray(new_shape)//2-1
         cropped_img = img[(cen_x-x_len):(cen_x+x_len), (cen_y-y_len):(cen_y+y_len)]
     elif len(new_shape)==3 and len(img.shape)==3:
         cen_x, cen_y, cen_z = np.asarray(img.shape)//2
-        x_len, y_len, z_len = np.asarray(new_shape)//2
+        x_len, y_len, z_len = np.asarray(new_shape)//2-1
         cropped_img = img[(cen_x-x_len):(cen_x+x_len), 
                         (cen_y-y_len):(cen_y+y_len), 
                         (cen_z-z_len):(cen_z+z_len)]
