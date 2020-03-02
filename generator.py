@@ -14,6 +14,7 @@ def create_phantom_and_process(preview = True):
     
     return phantom, processed_phantom
 
+
 def save(orig_phantom, processed_phantom, tag):
     key = f"dim{len(shape)},porsty{porsty},blobns{blobns},noise{noise_prob},angles{angles}_{tag}"
     files = {'original': orig_phantom,
@@ -21,6 +22,7 @@ def save(orig_phantom, processed_phantom, tag):
     db = shelve.open('database')
     db[key] = files
     db.close()
+
 
 shape = (50, 50, 50)
 porsty = 0.3
