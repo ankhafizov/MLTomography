@@ -33,11 +33,13 @@ def save(orig_phantom, processed_phantom, tag):
 shape = (500, 500)
 porsty = 0.3
 blobns = 2
-noise_prob = 0.01
-angles = 360
+noise_prob = 0.05
+angles = 180
 
 tag = 'train'
-# tag = 'test'
+save(*create_phantom_and_process(), tag)
+
+tag = 'test'
 save(*create_phantom_and_process(), tag)
 
 plt.show()

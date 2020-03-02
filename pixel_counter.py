@@ -57,7 +57,7 @@ def count_neighbor_average_array(img):
     return average_array
 
 
-def save_data(phantom_file_key):
+def save_data(phantom_file_key, tag):
     phantoms = opener.open(phantom_file_key)
     orig_phantom = phantoms['original']
     proc_phantom = phantoms['processed']
@@ -68,7 +68,6 @@ def save_data(phantom_file_key):
             'pixel_real_value': np.concatenate(orig_phantom)}
     df = pd.DataFrame(data)
 
-    save_path = os.path.dirname(os.path.realpath(__file__))+'\\__pycache__\\pixel_dataframe.csv'
+    save_path = os.path.dirname(os.path.realpath(__file__))+f'\\__pycache__\\{tag}_pixel_dataframe.csv'
     df.to_csv(save_path)
 
-save_data('dim2,porsty0.3,blobns2,noise0.01,angles360_train')
