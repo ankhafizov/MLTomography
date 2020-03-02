@@ -11,7 +11,7 @@ def process_image(image, angles, noizeProbability):
     sim = add_noise(sim, noizeProbability)
     rec = reconstruct(sim)
     print("reconstruction shape: ", rec.shape)
-    return crop(rec, image.shape)
+    return crop(rec, image.shape), crop(image, image.shape)
 
 
 def crop(img, new_shape):
