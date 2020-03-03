@@ -2,59 +2,17 @@ import numpy as np
 import opener
 import pandas as pd
 import os
+from scipy import ndimage
 
 
-def count_neighbor_average(arr, centre):
+def count_neighbor_average_array(arr):
     dim = len(arr.shape)
+    number, kern = (26, [[[0]]]) if dim == 3 else (8, [[0]])
     
-    sum_neighbour = 0
-    count = 0
+    kern = np.pad(kern, (1,1), constant_values=(1, 1))
+    filt_arr = ndimage.convolve(arr, kern)/number
     
-    if dim == 2:
-        for i in [-1, 0, 1]:
-            for j in [-1, 0, 1]:
-                if (i,j)!=(0,0):
-                    ind = np.asarray(centre) + np.asarray((i,j))
-                    if np.all(ind>=0):
-                        try:
-                            point = arr[ind[0]][ind[1]]
-                            sum_neighbour += point
-                            count += 1
-                        except IndexError:
-                            point = 0
-        average = sum_neighbour / count
-    else:
-        for i in [-1, 0, 1]:
-            for j in [-1, 0, 1]:
-                for k in [-1, 0, 1]:
-                    if (i,j,k)!=(0,0,0):
-                        ind = np.asarray(centre) + np.asarray((i,j,k))
-                        if np.all(ind>=0):
-                            try:
-                                point = arr[ind[0]][ind[1]][ind[2]]
-                                sum_neighbour += point
-                                count += 1
-                            except IndexError:
-                                point = 0
-        average = sum_neighbour / count
-    
-    return average
-
-
-def count_neighbor_average_array(img):
-    dim = len(img.shape)
-    average_array = np.zeros(img.shape)
-    
-    if dim == 2:
-        for i, line in enumerate(img):
-            for j in range(len(line)):
-                average_array[i][j] = count_neighbor_average(img, (i,j))
-    else:
-        for i, planar in enumerate(img):
-            for j, line in enumerate(planar):
-                for k in range(len(line)):
-                    average_array[i][j][k] = count_neighbor_average(img, (i,j,k))
-    return average_array
+    return filt_arr
 
 
 def save_data(phantom_file_key, tag):
