@@ -1,8 +1,6 @@
 import pandas as pd
 import os
-import numpy as np
 import h5py
-import pandas as pd
 
 
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
