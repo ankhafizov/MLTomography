@@ -2,12 +2,49 @@ import matplotlib.pyplot as plt
 import porespy.generators as generator
 import model_of_experiment as moe
 import numpy as np
-import shelve
+import data_manager as dm
 
-def create_phantom_and_process(preview = True):
+
+def create_phantom_and_process(shape, porsty, blobns, noise_prob, num_of_angles, tag, preview = True):
+    '''
+    Generates and saves phantom to the database.
+        
+    Parameters:
+    -----------
+    shape: array, dtype = int.
+        Shape of riginal phantom, must contain 2 or 3 int numbers.
+
+    processed_phantom: ndarray.
+        Phantom object which represents result of the experiment
+
+    porsty: float.
+        Phantom's porosiity
+    
+    blobns: int.
+        Phantom's blobiness
+    
+    noise_prob: float.
+        Noise probability for SALT AND PEPPER algoithm
+    
+    num_of_angles: int.
+        Number of Radon projections
+    
+    tag: 'test', 'train' or another
+        This parameter controls conflicts if several csv files are generated for 1 phanom.
+        Keep it different for staging different images with similar parameters
+    
+    preview: bool
+        shows images of phantoms if True
+    
+    results:
+    --------
+    out: (array, array)
+        (phantom, processed)
+    '''
     phantom = generator.blobs(shape, porosity=porsty, blobiness=blobns)
-    processed_phantom, phantom = moe.process_image(phantom, angles, noise_prob)
+    processed_phantom, phantom = moe.process_image(phantom, num_of_angles, noise_prob)
 
+    dm.save(phantom, processed_phantom, porsty, blobns, noise_prob, num_of_angles, tag)
     if preview:
         if len(phantom.shape) == 3:
             _, axes = plt.subplots(1,2)
@@ -21,25 +58,15 @@ def create_phantom_and_process(preview = True):
     return np.absolute(phantom), np.absolute(processed_phantom)
 
 
-def save(orig_phantom, processed_phantom, tag):
-    key = f"dim{len(shape)},porsty{porsty},blobns{blobns},noise{noise_prob},angles{angles}_{tag}"
-    files = {'original': orig_phantom,
-            'processed': processed_phantom}
-    db = shelve.open('database')
-    db[key] = files
-    db.close()
+if __name__ == '__main__':
+    shape = (500, 500)
+    porsty = 0.3
+    blobns = 2
+    noise_prob = 0.05
+    num_of_angles = 180
 
+    tag = 'train'
+    create_phantom_and_process(shape, porsty, blobns, noise_prob, num_of_angles, tag)
+    print(dm.show_data_info())
 
-shape = (500, 500)
-porsty = 0.3
-blobns = 2
-noise_prob = 0.05
-angles = 180
-
-tag = 'train'
-save(*create_phantom_and_process(), tag)
-
-tag = 'test'
-save(*create_phantom_and_process(), tag)
-
-plt.show()
+    plt.show()
