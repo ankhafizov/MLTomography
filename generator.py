@@ -65,9 +65,9 @@ if __name__ == '__main__':
     blobns = 2
     noise_prob = 0.05
     num_of_angles = 180
-
     tag = 'train'
-    create_phantom_and_process(shape, porsty, blobns, noise_prob, num_of_angles, tag)
+
+    orig_phantom_train, proc_phantom_train = create_phantom_and_process(shape, porsty, blobns, noise_prob, num_of_angles, tag)
     print(dm.show_data_info())
 
     plt.show()
