@@ -39,7 +39,7 @@ def create_phantom_and_process(shape, porsty, blobns, noise_prob, num_of_angles,
     results:
     --------
     out: (array, array)
-        (phantom, processed)
+        (generated phantom, processed phantom)
     '''
 
     phantom = generator.blobs(shape, porosity=porsty, blobiness=blobns)
