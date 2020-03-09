@@ -68,9 +68,9 @@ def count_neighbor_average_array_and_save(dimension:int,
 
     neighbor_pixel_average = count_neighbor_average_array(proc_phantom)
 
-    data = {'neighbor_average': np.concatenate(neighbor_pixel_average),
-            'proc_phantom_pixel_values': np.concatenate(proc_phantom),
-            'pixel_real_value': np.concatenate(orig_phantom)}
+    data = {'neighbor_average': neighbor_pixel_average.flatten(),
+            'proc_phantom_pixel_values': proc_phantom.flatten(),
+            'pixel_real_value': orig_phantom.flatten()}
     csv_file = pd.DataFrame(data)
 
     dm.add_csv(dimension, id_indx, tag, csv_file)
