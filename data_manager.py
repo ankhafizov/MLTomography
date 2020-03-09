@@ -197,7 +197,7 @@ def get_data(dimension: int,
         open_path = os.path.join(open_path, 'phantoms.h5')
         with h5py.File(open_path, 'r') as hdf:
             dataset = hdf.get(f'{dimension}_dimensional').get(str(id_indx)).get(tag).get(what_to_return)
-            dataset = dataset.value
+            dataset = dataset[()]
     else:
         csv_name = f'{dimension}_{id_indx}_{tag}.csv'
         open_path = os.path.join(open_path, csv_name)
