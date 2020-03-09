@@ -45,6 +45,8 @@ def create_phantom_and_process(shape, porsty, blobns, noise_prob, num_of_angles,
     phantom = generator.blobs(shape, porosity=porsty, blobiness=blobns)
     processed_phantom, phantom = moe.process_image(phantom, num_of_angles, noise_prob)
 
+    print("processed_phantom shape: ", processed_phantom.shape)
+
     dm.save(phantom, processed_phantom, porsty, blobns, noise_prob, num_of_angles, tag)
     if preview:
         if len(phantom.shape) == 3:
