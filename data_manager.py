@@ -37,13 +37,13 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
     '''
 
     dimension = len(orig_phantom.shape)
-    save_path = SCRIPT_PATH+'/database'
+    save_path = os.path.join(SCRIPT_PATH, 'database')
 
     try:
         os.mkdir(save_path)
     except OSError:
         print("changing existed file")
-    save_path = save_path+'/phantoms.h5'
+    save_path = os.path.join(save_path, 'phantoms.h5')
     
     with h5py.File(save_path, 'a') as hdf:
         ps = porosity, blobns, noise_info, num_of_angles
@@ -92,7 +92,7 @@ def show_data_info():
     out: pandas.core.frame.DataFrame
         Table format. Use .head() to see first 5 rows.
     ''' 
-    open_path = SCRIPT_PATH+'\database\phantoms.h5'
+    open_path = os.path.join(SCRIPT_PATH, 'database', 'phantoms.h5')
 
     df = pd.DataFrame()
     for dim in [2, 3]:
@@ -156,7 +156,7 @@ def add_csv(dimension:int,
     '''
 
     csv_name = f'{dimension}_{id_indx}_{tag}.csv'
-    save_path = SCRIPT_PATH +'/database/' + csv_name
+    save_path = os.path.join(SCRIPT_PATH, 'database', csv_name)
     csv_file.to_csv(save_path, index = False)
 
 
@@ -190,16 +190,16 @@ def get_data(dimension: int,
         Depends on what_to_return parameter
     '''
 
-    open_path = SCRIPT_PATH+'\\database\\'
+    open_path = os.path.join(SCRIPT_PATH, 'database')
     dataset = None
     if not what_to_return == "csv":
-        open_path = open_path + 'phantoms.h5'
+        open_path = os.path.join(open_path, 'phantoms.h5')
         with h5py.File(open_path, 'r') as hdf:
             dataset = hdf.get(f'{dimension}_dimensional').get(str(id_indx)).get(tag).get(what_to_return)
             dataset = dataset.value
     else:
         csv_name = f'{dimension}_{id_indx}_{tag}.csv'
-        open_path = open_path + csv_name
+        open_path = os.path.join(open_path, csv_name)
         dataset = pd.read_csv(open_path)
 
     return dataset
