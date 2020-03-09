@@ -1,5 +1,3 @@
-from porespy import generators as ps
-import matplotlib.pyplot as plt
 import numpy as np
 import random
 from skimage.transform import radon, iradon
