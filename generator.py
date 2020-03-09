@@ -59,7 +59,7 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
             axes[0].imshow(processed_phantom, cmap='gray')
             axes[1].imshow(phantom, cmap='gray')
 
-    return np.absolute(phantom), np.absolute(processed_phantom)
+    return np.absolute(phantom), np.absolute(processed_phantom)  # why return np.absolute?
 
 
 if __name__ == '__main__':
