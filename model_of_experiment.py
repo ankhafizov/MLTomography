@@ -14,6 +14,7 @@ def process_image(image, angles, noizeProbability):
 
 
 def crop(img, new_shape):
+    print(f'crop image to shape {new_shape}')
     if len(new_shape)==2 and len(img.shape)==2:
         cen_x, cen_y = np.asarray(img.shape)//2
         x_len, y_len = np.asarray(new_shape)//2-1
@@ -28,6 +29,7 @@ def crop(img, new_shape):
         print("Mistake: shape of img does not fit new shape (2 or 3)")
         cropped_img = None
 
+    print(f'cropped image have shape {cropped_img.shape}')
     return cropped_img
 
 
