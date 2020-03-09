@@ -105,12 +105,13 @@ def show_data_info():
                 porosities, blobnses, num_of_angles, noises, tags = [], [], [], [], []
 
                 for id_indx in id_indxes:
-                    tags.append(list(hdf.get(f'{dim}_dimensional').get(str(id_indx))))
-                    p, b, n, a = list(hdf.get(f'{dim}_dimensional').get(id_indx).attrs.values())
-                    porosities.append(p)
-                    blobnses.append(b)
-                    num_of_angles.append(a)
-                    noises.append(n)
+                    index_data = dimension_data.get(str(id_indx))
+                    tags.append(list(index_data))
+                    for name, value in list(index_data.attrs.items()):
+                        if name == 'blobiness': blobnses.append(value)
+                        if name == 'noise': noises.append(value)
+                        if name == 'num_of_angles': num_of_angles.append(value)
+                        if name == 'porosity': porosities.append(value)
                 dim_data = {
                     'dimension': dim,
                     'id_indx': id_indxes,
