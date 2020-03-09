@@ -11,7 +11,32 @@ def process_image(image, angles, noizeProbability):
     sim = add_poisson_noise(sim, 1e2)
     rec = reconstruct(sim)
     print("reconstruction shape: ", rec.shape)
-    return crop(rec, image.shape), crop(image, image.shape)
+    return crop_image(rec, image.shape), crop_image(image, image.shape)
+
+
+def left_edge(center, halves, index):
+    return np.ceil(center[index] - halves[index]).astype(np.int)
+
+
+def right_edge(center, halves, odds, index):
+    return np.ceil(center[index] + halves[index] + odds[index]).astype(np.int)
+
+
+def crop_image(rec_image, new_shape):
+
+    center = [x // 2 for x in rec_image.shape]
+    halves = [x // 2 for x in new_shape]
+    odds = [x % 2 for x in new_shape]
+
+    ranges = (
+        slice(
+            left_edge(center, halves, i),
+            right_edge(center, halves, odds, i)
+        )
+        for i in range(3)
+    )
+
+    return rec_image[tuple(ranges)]
 
 
 def crop(img, new_shape):
