@@ -99,7 +99,8 @@ def show_data_info():
     for dim in [2, 3]:
         try:
             with h5py.File(open_path, 'r') as hdf:
-                id_indxes = list(hdf.get(f'{dim}_dimensional'))
+                dimension_data = hdf.get(f'{dim}_dimensional')
+                id_indxes = list(dimension_data)
 
                 porosities, blobnses, num_of_angles, noises, tags = [], [], [], [], []
 
