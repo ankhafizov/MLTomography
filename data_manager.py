@@ -114,7 +114,7 @@ def show_data_info():
                 dim_data = {
                     'dimension': dim,
                     'id_indx': id_indxes,
-                    'porositiy': porosities,
+                    'porosity': porosities,
                     'blobiness': blobnses,
                     'num_of_angles': num_of_angles,
                     'noise': noises,
