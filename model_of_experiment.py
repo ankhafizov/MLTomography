@@ -3,12 +3,14 @@ import random
 from skimage.transform import radon, iradon
 
 
-def process_image(image, angles, noizeProbability):
+def process_image(image, angles, noise, noise_method):
     print("phantom shape: ", image.shape)
     sim = create_sinogram(angles, image)
     print("sinogram shape: ", sim.shape)
-    # sim = add_noise(sim, noizeProbability)
-    sim = add_poisson_noise(sim, 1e2)
+    if noise_method == 's&p':
+        sim = add_noise(sim, noise)
+    elif noise_method == 'poisson':
+        sim = add_poisson_noise(sim, noise)
     rec = reconstruct(sim)
     print("reconstruction shape: ", rec.shape)
     return crop_image(rec, image.shape), crop_image(image, image.shape)
