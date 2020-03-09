@@ -38,7 +38,7 @@ def create_sinogram(angles, img):
     if len(img.shape) == 3:
         sim = np.asarray([radon(img_slice, theta=set_of_angles, circle=False) for img_slice in img])
     else:
-        sim = radon(img, theta=set_of_angles, circle=False) 
+        sim = radon(img, theta=set_of_angles, circle=False)
     
     return sim
 
