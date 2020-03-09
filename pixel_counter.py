@@ -4,6 +4,16 @@ import numpy as np
 import pandas as pd
 
 
+def neighbor_kern(dim):
+
+    kern_shape = tuple(1 for _ in range(dim))
+    kern = np.zeros(kern_shape)
+    kern = np.pad(kern, 1, constant_values=1)
+    number = 3 ** dim - 1
+
+    return kern, number
+
+
 def count_neighbor_average_array(arr: np.ndarray):
     '''
     For each single pixel counts average intensity value of it surroundings (adjacent pixels).
@@ -20,9 +30,7 @@ def count_neighbor_average_array(arr: np.ndarray):
     '''
 
     dim = len(arr.shape)
-    number, kern = (26, [[[0]]]) if dim == 3 else (8, [[0]])
-
-    kern = np.pad(kern, (1,1), constant_values=(1, 1))
+    kern, number = neighbor_kern(dim)
     av_arr = ndimage.convolve(arr, kern)/number
     
     return av_arr
