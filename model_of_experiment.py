@@ -4,6 +4,7 @@ from skimage.transform import radon, iradon
 
 
 def process_image(image, angles, noizeProbability):
+    print("phantom shape: ", image.shape)
     sim = create_sinogram(angles, image)
     print("sinogram shape: ", sim.shape)
     sim = add_noise(sim, noizeProbability)
