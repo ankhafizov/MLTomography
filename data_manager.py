@@ -86,7 +86,7 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
 def show_data_info():
     '''
     shows table with existed phantom content: dimension, id_inx, tags,
-    and phanrom attributes: porosity, number of angles, blobiness, noise info
+    and phantom attributes: porosity, number of angles, blobiness, noise info
 
     Returns:
     --------
