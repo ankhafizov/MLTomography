@@ -61,10 +61,11 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
             id_indx = '1'
         
         phantom_root_path = f'{dimension}_dimensional/{id_indx}'
+        phantom_root_tag_path = f'{phantom_root_path}/{tag}'
         try:
-            phantom_file_group = hdf.create_group(phantom_root_path + f'/{tag}')
+            phantom_file_group = hdf.create_group(phantom_root_tag_path)
         except BaseException:
-            phantom_file_group = hdf.get(phantom_root_path + f'/{tag}')
+            phantom_file_group = hdf.get(phantom_root_tag_path)
         
         phantom_root_group = hdf.get(phantom_root_path)
         phantom_root_group.attrs["porosity"] = porosity
