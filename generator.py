@@ -5,6 +5,16 @@ import numpy as np
 import data_manager as dm
 
 
+def get_min_max(img):
+
+    img_min = img.min()
+    img_max = img.max()
+
+    print(f'min: {img_min}, max: {img_max}')
+
+    return img_min, img_max
+
+
 def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag, preview=True, noise_method='s&p'):
     '''
     Generates and saves phantom to the database.
@@ -47,6 +57,11 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
     processed_phantom, phantom = moe.process_image(phantom, num_of_angles, noise, noise_method)
 
     print("processed_phantom shape: ", processed_phantom.shape)
+
+    pp_min, pp_max = get_min_max(processed_phantom)
+    print('norm image from 0 to 1')
+    processed_phantom = (processed_phantom - pp_min) / (pp_max - pp_min)
+    get_min_max(processed_phantom)
 
     dm.save(phantom, processed_phantom, porsty, blobns, noise, num_of_angles, tag)
     if preview:
