@@ -120,7 +120,7 @@ def show_data_info():
                     'noise': noises,
                     'tags (tring array)': tags}
                 dim_df = pd.DataFrame(dim_data)
-                df = df.append(dim_df, ignore_index = True)
+                df = df.append(dim_df, ignore_index=True)
         except BaseException:
             print(f'files with dimension {dim} does not exist')
 
