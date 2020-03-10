@@ -35,7 +35,7 @@ def crop_image(rec_image, new_shape):
             left_edge(center, halves, i),
             right_edge(center, halves, odds, i)
         )
-        for i in range(3)
+        for i in range(len(new_shape))
     )
 
     return rec_image[tuple(ranges)]
