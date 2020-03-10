@@ -26,8 +26,10 @@ def right_edge(center, halves, odds, index):
 
 def crop_image(image, new_shape):
 
-    center = [x // 2 for x in rec_image.shape]
     old_shape = image.shape
+    if len(old_shape) != len(new_shape):
+        raise ValueError('incorrect shapes')
+
     center = [x // 2 for x in old_shape]
     halves = [x // 2 for x in new_shape]
     odds = [x % 2 for x in new_shape]
