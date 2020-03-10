@@ -24,9 +24,11 @@ def right_edge(center, halves, odds, index):
     return np.ceil(center[index] + halves[index] + odds[index]).astype(np.int)
 
 
-def crop_image(rec_image, new_shape):
+def crop_image(image, new_shape):
 
     center = [x // 2 for x in rec_image.shape]
+    old_shape = image.shape
+    center = [x // 2 for x in old_shape]
     halves = [x // 2 for x in new_shape]
     odds = [x % 2 for x in new_shape]
 
@@ -38,7 +40,7 @@ def crop_image(rec_image, new_shape):
         for i in range(len(new_shape))
     )
 
-    return rec_image[tuple(ranges)]
+    return image[tuple(ranges)]
 
 
 def crop(img, new_shape):
