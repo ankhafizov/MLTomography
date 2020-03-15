@@ -53,6 +53,8 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
         (generated phantom, processed phantom)
     '''
 
+    print(f'shape { shape }, porosity { porsty }, blobiness { blobns }, noise { noise }')
+
     phantom = generator.blobs(shape, porosity=porsty, blobiness=blobns)
     processed_phantom, phantom = moe.process_image(phantom, num_of_angles, noise, noise_method)
 
