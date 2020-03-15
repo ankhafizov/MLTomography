@@ -56,9 +56,9 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
                     print("editing file already exists")
                     break
                 else:
-                    id_indx = str(int(id_value) + 1)
+                    id_indx = f'{(int(id_value) + 1):03d}'
         except BaseException:
-            id_indx = '1'
+            id_indx = f'{1:03d}'
         
         phantom_root_path = f'{dimension}_dimensional/{id_indx}'
         phantom_root_tag_path = f'{phantom_root_path}/{tag}'
