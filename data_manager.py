@@ -2,7 +2,6 @@ import pandas as pd
 import os
 import h5py
 
-
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -44,7 +43,7 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
     except OSError:
         print("changing existed file")
     save_path = os.path.join(save_path, 'phantoms.h5')
-    
+
     with h5py.File(save_path, 'a') as hdf:
         ps = porosity, blobns, noise_info, num_of_angles
 
@@ -72,15 +71,15 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
         phantom_root_group.attrs["blobiness"] = blobns
         phantom_root_group.attrs["noise"] = noise_info
         phantom_root_group.attrs["num_of_angles"] = num_of_angles
-        
+
         try:
-            phantom_file_group.create_dataset("orig_phantom", data = orig_phantom)
-            phantom_file_group.create_dataset("processed_phantom", data = processed_phantom)
+            phantom_file_group.create_dataset("orig_phantom", data=orig_phantom)
+            phantom_file_group.create_dataset("processed_phantom", data=processed_phantom)
         except BaseException:
             del phantom_file_group["orig_phantom"]
             del phantom_file_group["processed_phantom"]
-            phantom_file_group.create_dataset("orig_phantom", data = orig_phantom)
-            phantom_file_group.create_dataset("processed_phantom", data = processed_phantom)
+            phantom_file_group.create_dataset("orig_phantom", data=orig_phantom)
+            phantom_file_group.create_dataset("processed_phantom", data=processed_phantom)
 
 
 def show_data_info():
@@ -92,10 +91,11 @@ def show_data_info():
     --------
     out: pandas.core.frame.DataFrame
         Table format. Use .head() to see first 5 rows.
-    ''' 
+    '''
     open_path = os.path.join(SCRIPT_PATH, 'database', 'phantoms.h5')
 
     df = pd.DataFrame()
+
     for dim in [2, 3]:
         try:
             with h5py.File(open_path, 'r') as hdf:
@@ -128,9 +128,9 @@ def show_data_info():
     return df
 
 
-def add_csv(dimension:int,
-            id_indx: int, 
-            tag:str, 
+def add_csv(dimension: int,
+            id_indx: int,
+            tag: str,
             csv_file: pd.core.frame.DataFrame):
     '''
     Use this function to save the csv file for ML process.
@@ -160,13 +160,13 @@ def add_csv(dimension:int,
 
     csv_name = f'{dimension}_{id_indx}_{tag}.csv'
     save_path = os.path.join(SCRIPT_PATH, 'database', csv_name)
-    csv_file.to_csv(save_path, index = False)
+    csv_file.to_csv(save_path, index=False)
 
 
-def get_data(dimension: int, 
-            id_indx: int, 
-            tag: str, 
-            what_to_return: str):
+def get_data(dimension: int,
+             id_indx: int,
+             tag: str,
+             what_to_return: str):
     '''
     Use this function to get needed data for ML process.
     Use show_data_info function to find out dimension, id_inx and tags, which exist.
@@ -206,5 +206,3 @@ def get_data(dimension: int,
         dataset = pd.read_csv(open_path)
 
     return dataset
-
-
