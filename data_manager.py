@@ -45,12 +45,16 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
     save_path = os.path.join(save_path, 'phantoms.h5')
 
     with h5py.File(save_path, 'a') as hdf:
+
+        dimension_path = f'{dimension}_dimensional'
+        tag_path = f'{dimension_path}/{tag}'
+
         ps = porosity, blobns, noise_info, num_of_angles
 
         try:
-            current_id_values = list(hdf.get(f'{dimension}_dimensional'))
+            current_id_values = list(hdf.get(tag_path))
             for id_value in current_id_values:
-                if tuple(hdf.get(f'{dimension}_dimensional').get(id_value).attrs.values()) == ps:
+                if tuple(hdf.get(tag_path).get(id_value).attrs.values()) == ps:
                     id_indx = id_value
                     print("editing file already exists")
                     break
@@ -58,14 +62,13 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
                     id_indx = f'{(int(id_value) + 1):03d}'
         except BaseException:
             id_indx = f'{1:03d}'
-        
-        phantom_root_path = f'{dimension}_dimensional/{id_indx}'
-        phantom_root_tag_path = f'{phantom_root_path}/{tag}'
+
+        phantom_root_path = f'{tag_path}/{id_indx}'
         try:
-            phantom_file_group = hdf.create_group(phantom_root_tag_path)
+            phantom_file_group = hdf.create_group(phantom_root_path)
         except BaseException:
-            phantom_file_group = hdf.get(phantom_root_tag_path)
-        
+            phantom_file_group = hdf.get(phantom_root_path)
+
         phantom_root_group = hdf.get(phantom_root_path)
         phantom_root_group.attrs["porosity"] = porosity
         phantom_root_group.attrs["blobiness"] = blobns
@@ -99,29 +102,41 @@ def show_data_info():
     for dim in [2, 3]:
         try:
             with h5py.File(open_path, 'r') as hdf:
-                dimension_data = hdf.get(f'{dim}_dimensional')
-                id_indxes = list(dimension_data)
 
-                porosities, blobnses, num_of_angles, noises, tags = [], [], [], [], []
+                dimension_path = f'{dim}_dimensional'
 
-                for id_indx in id_indxes:
-                    index_data = dimension_data.get(str(id_indx))
-                    tags.append(list(index_data))
-                    for name, value in list(index_data.attrs.items()):
-                        if name == 'blobiness': blobnses.append(value)
-                        if name == 'noise': noises.append(value)
-                        if name == 'num_of_angles': num_of_angles.append(value)
-                        if name == 'porosity': porosities.append(value)
-                dim_data = {
-                    'dimension': dim,
-                    'id_indx': id_indxes,
-                    'porosity': porosities,
-                    'blobiness': blobnses,
-                    'num_of_angles': num_of_angles,
-                    'noise': noises,
-                    'tags (tring array)': tags}
-                dim_df = pd.DataFrame(dim_data)
-                df = df.append(dim_df, ignore_index=True)
+                for tag in ['train', 'test']:
+
+                    tag_path = f'{dimension_path}/{tag}'
+                    tag_data = hdf.get(tag_path)
+                    id_indxes = list(tag_data)
+
+                    porosities, blobnses, num_of_angles, noises, data = [], [], [], [], []
+
+                    for id_indx in id_indxes:
+                        index_data = tag_data.get(str(id_indx))
+                        data.append(list(index_data))
+                        for name, value in list(index_data.attrs.items()):
+                            if name == 'blobiness':
+                                blobnses.append(value)
+                            if name == 'noise':
+                                noises.append(value)
+                            if name == 'num_of_angles':
+                                num_of_angles.append(value)
+                            if name == 'porosity':
+                                porosities.append(value)
+                    dim_data = {
+                        'dimension': dim,
+                        'id_indx': id_indxes,
+                        'porosity': porosities,
+                        'blobiness': blobnses,
+                        'num_of_angles': num_of_angles,
+                        'noise': noises,
+                        'tag': tag,
+                        'data (string array)': data
+                    }
+                    dim_df = pd.DataFrame(dim_data)
+                    df = df.append(dim_df, ignore_index=True)
         except BaseException:
             print(f'files with dimension {dim} does not exist')
 
@@ -198,7 +213,7 @@ def get_data(dimension: int,
     if not what_to_return == "csv":
         open_path = os.path.join(open_path, 'phantoms.h5')
         with h5py.File(open_path, 'r') as hdf:
-            dataset = hdf.get(f'{dimension}_dimensional').get(str(id_indx)).get(tag).get(what_to_return)
+            dataset = hdf.get(f'{dimension}_dimensional').get(tag).get(str(id_indx)).get(what_to_return)
             dataset = dataset[()]
     else:
         csv_name = f'{dimension}_{id_indx}_{tag}.csv'
