@@ -80,6 +80,4 @@ def count_neighbor_average_array_and_save(dimension:int,
 
     dm.add_csv(dimension, id_indx, tag, csv_file)
 
-    plt.figure(figsize=(20,10))
-    colors = ['red' if el else 'blue' for el in op]
-    plt.scatter(pp, npa, marker='.', c=colors)
+    return pp, npa, op
