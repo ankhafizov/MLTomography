@@ -68,11 +68,11 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
     dm.save(phantom, processed_phantom, porsty, blobns, noise, num_of_angles, tag)
     if preview:
         if len(phantom.shape) == 3:
-            _, axes = plt.subplots(1, 2)
+            _, axes = plt.subplots(1, 2, figsize=(10, 10))
             axes[0].imshow(processed_phantom[:, :, 0], cmap='gray')
             axes[1].imshow(phantom[:, :, 0], cmap='gray')
         else:
-            _, axes = plt.subplots(1, 2)
+            _, axes = plt.subplots(1, 2, figsize=(10, 10))
             axes[0].imshow(processed_phantom, cmap='gray')
             axes[1].imshow(phantom, cmap='gray')
 
