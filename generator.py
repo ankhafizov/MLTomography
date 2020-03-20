@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import porespy.generators as generator
+import porespy
 import model_of_experiment as moe
 import numpy as np
 import data_manager as dm
@@ -55,8 +55,12 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
 
     print(f'shape { shape }, porosity { porsty }, blobiness { blobns }, noise { noise }')
 
-    phantom = generator.blobs(shape, porosity=porsty, blobiness=blobns)
-    # TODO: have to check for floating stones in generated volume before further processing
+    phantom = porespy.generators.blobs(shape, porosity=porsty, blobiness=blobns)
+    phantom = porespy.filters.trim_floating_solid(phantom)
+
+    # invert phantom to set stone/pore coding as following: 1 — stone, 0 — pore
+    phantom = ~phantom
+
     processed_phantom, phantom = moe.process_image(phantom, num_of_angles, noise, noise_method)
 
     print("processed_phantom shape: ", processed_phantom.shape)
