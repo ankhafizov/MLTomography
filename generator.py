@@ -53,7 +53,7 @@ def create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles,
         (generated phantom, processed phantom)
     """
 
-    print(f'shape { shape }, porosity { porosity }, blobiness { blobiness }, noise { noise }')
+    print(f'{ tag }:  shape { shape }, porosity { porosity }, blobiness { blobiness }, noise { noise }')
 
     phantom = porespy.generators.blobs(shape, porosity=porosity, blobiness=blobiness)
     phantom = porespy.filters.trim_floating_solid(phantom)
@@ -80,6 +80,8 @@ def create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles,
             _, axes = plt.subplots(1, 2, figsize=(10, 10))
             axes[0].imshow(processed_phantom, cmap='gray')
             axes[1].imshow(phantom, cmap='gray')
+
+    print(f'{ tag } creating finished\n')
 
     return np.absolute(phantom), np.absolute(processed_phantom)  # why return np.absolute?
 
