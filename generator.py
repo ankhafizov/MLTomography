@@ -18,7 +18,7 @@ def get_min_max(img):
 def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag, preview=True, noise_method='s&p'):
     """
     Generates and saves phantom to the database.
-        
+
     Parameters:
     -----------
     shape: array, dtype = int.
@@ -29,24 +29,24 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
 
     porsty: float.
         Phantom's porosiity
-    
     blobns: int.
+
         Phantom's blobiness
-    
+
     noise: float.
         Noise probability for SALT AND PEPPER algorithm — noise_method='s&p'
         Intensity value for POISSON noise algorithm — noise_method='poisson'
-    
+
     num_of_angles: int.
         Number of Radon projections
-    
+
     tag: 'test', 'train' or another
         This parameter controls conflicts if several csv files are generated for 1 phanom.
         Keep it different for staging different images with similar parameters
-    
+
     preview: bool
         shows images of phantoms if True
-    
+
     results:
     --------
     out: (array, array)
