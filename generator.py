@@ -16,7 +16,7 @@ def get_min_max(img):
 
 
 def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag, preview=True, noise_method='s&p'):
-    '''
+    """
     Generates and saves phantom to the database.
         
     Parameters:
@@ -51,7 +51,7 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
     --------
     out: (array, array)
         (generated phantom, processed phantom)
-    '''
+    """
 
     print(f'shape { shape }, porosity { porsty }, blobiness { blobns }, noise { noise }')
 
