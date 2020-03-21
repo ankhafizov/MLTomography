@@ -84,7 +84,8 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
     return np.absolute(phantom), np.absolute(processed_phantom)  # why return np.absolute?
 
 
-if __name__ == '__main__':
+def main():
+
     shape = (500, 500)
     porsty = 0.3
     blobns = 2
@@ -96,3 +97,7 @@ if __name__ == '__main__':
     print(dm.show_data_info())
 
     plt.show()
+
+
+if __name__ == '__main__':
+    main()
