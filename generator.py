@@ -22,13 +22,13 @@ def create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles,
     Parameters:
     -----------
     shape: array, dtype = int.
-        Shape of riginal phantom, must contain 2 or 3 int numbers.
+        Shape of original phantom, must contain 2 or 3 int numbers.
 
     processed_phantom: ndarray.
         Phantom object which represents result of the experiment
 
     porosity: float.
-        Phantom's porosiity
+        Phantom's porosity
 
     blobiness: int.
         Phantom's blobiness
