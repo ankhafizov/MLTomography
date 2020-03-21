@@ -15,7 +15,7 @@ def get_min_max(img):
     return img_min, img_max
 
 
-def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag, preview=True, noise_method='s&p'):
+def create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles, tag, preview=True, noise_method='s&p'):
     """
     Generates and saves phantom to the database.
 
@@ -27,10 +27,10 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
     processed_phantom: ndarray.
         Phantom object which represents result of the experiment
 
-    porsty: float.
+    porosity: float.
         Phantom's porosiity
-    blobns: int.
 
+    blobiness: int.
         Phantom's blobiness
 
     noise: float.
@@ -53,9 +53,9 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
         (generated phantom, processed phantom)
     """
 
-    print(f'shape { shape }, porosity { porsty }, blobiness { blobns }, noise { noise }')
+    print(f'shape { shape }, porosity { porosity }, blobiness { blobiness }, noise { noise }')
 
-    phantom = porespy.generators.blobs(shape, porosity=porsty, blobiness=blobns)
+    phantom = porespy.generators.blobs(shape, porosity=porosity, blobiness=blobiness)
     phantom = porespy.filters.trim_floating_solid(phantom)
 
     # invert phantom to set stone/pore coding as following: 1 — stone, 0 — pore
@@ -70,7 +70,7 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
     processed_phantom = (processed_phantom - pp_min) / (pp_max - pp_min)
     get_min_max(processed_phantom)
 
-    dm.save(phantom, processed_phantom, porsty, blobns, noise, num_of_angles, tag)
+    dm.save(phantom, processed_phantom, porosity, blobiness, noise, num_of_angles, tag)
     if preview:
         if len(phantom.shape) == 3:
             _, axes = plt.subplots(1, 2, figsize=(10, 10))
@@ -87,13 +87,13 @@ def create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag,
 def main():
 
     shape = (500, 500)
-    porsty = 0.3
-    blobns = 2
+    porosity = 0.3
+    blobiness = 2
     noise = 0.05
     num_of_angles = 180
     tag = 'train'
 
-    orig_phantom_train, proc_phantom_train = create_phantom_and_process(shape, porsty, blobns, noise, num_of_angles, tag)
+    orig_phantom_train, proc_phantom_train = create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles, tag)
     print(dm.show_data_info())
 
     plt.show()

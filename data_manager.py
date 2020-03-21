@@ -5,7 +5,7 @@ import h5py
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
-def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_angles, tag='train'):
+def save(orig_phantom, processed_phantom, porosity, blobiness, noise_info, num_of_angles, tag='train'):
     '''
     Saves phantom to the database.
         
@@ -20,7 +20,7 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
     porosity: float.
         Phantom's porosiity
     
-    blobns: int.
+    blobiness: int.
         Phantom's blobiness
     
     noise_info: float or str.
@@ -49,7 +49,7 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
         dimension_path = f'{dimension}_dimensional'
         tag_path = f'{dimension_path}/{tag}'
 
-        ps = porosity, blobns, noise_info, num_of_angles
+        ps = porosity, blobiness, noise_info, num_of_angles
 
         try:
             current_id_values = list(hdf.get(tag_path))
@@ -71,7 +71,7 @@ def save(orig_phantom, processed_phantom, porosity, blobns, noise_info, num_of_a
 
         phantom_root_group = hdf.get(phantom_root_path)
         phantom_root_group.attrs["porosity"] = porosity
-        phantom_root_group.attrs["blobiness"] = blobns
+        phantom_root_group.attrs["blobiness"] = blobiness
         phantom_root_group.attrs["noise"] = noise_info
         phantom_root_group.attrs["num_of_angles"] = num_of_angles
 
@@ -111,14 +111,14 @@ def show_data_info():
                     tag_data = hdf.get(tag_path)
                     id_indxes = list(tag_data)
 
-                    porosities, blobnses, num_of_angles, noises, data = [], [], [], [], []
+                    porosities, blobinesses, num_of_angles, noises, data = [], [], [], [], []
 
                     for id_indx in id_indxes:
                         index_data = tag_data.get(str(id_indx))
                         data.append(list(index_data))
                         for name, value in list(index_data.attrs.items()):
                             if name == 'blobiness':
-                                blobnses.append(value)
+                                blobinesses.append(value)
                             if name == 'noise':
                                 noises.append(value)
                             if name == 'num_of_angles':
@@ -129,7 +129,7 @@ def show_data_info():
                         'dimension': dim,
                         'id_indx': id_indxes,
                         'porosity': porosities,
-                        'blobiness': blobnses,
+                        'blobiness': blobinesses,
                         'num_of_angles': num_of_angles,
                         'noise': noises,
                         'tag': tag,
