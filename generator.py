@@ -64,10 +64,19 @@ def create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles,
     processed_phantom, phantom = moe.process_image(phantom, num_of_angles, noise, noise_method)
     print("processed_phantom shape: ", processed_phantom.shape)
 
-    pp_min, pp_max = get_min_max(processed_phantom)
     print('norm image from 0 to 1')
-    processed_phantom = (processed_phantom - pp_min) / (pp_max - pp_min)
+
+    pp_mean = np.mean(processed_phantom)
+    print(f'mean { pp_mean }')
+    # print(f'std { np.std(processed_phantom) }')
+    # print(f'var { np.var(processed_phantom) }')
+
+    processed_phantom = processed_phantom - pp_mean
+    pp_min, pp_max = get_min_max(processed_phantom)
+    k = np.max(np.asarray([np.abs(pp_min), np.abs(pp_max)]))
+    processed_phantom = (processed_phantom / (2 * k)) + 0.5
     get_min_max(processed_phantom)
+    print(f'mean { np.mean(processed_phantom) }')
 
     dm.save(phantom, processed_phantom, porosity, blobiness, noise, num_of_angles, tag)
     if preview:
