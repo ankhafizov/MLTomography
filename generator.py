@@ -53,7 +53,7 @@ def create_phantom_and_process(shape, porosity, blobiness, noise, num_of_angles,
         (generated phantom, processed phantom)
     """
 
-    print(f'{ tag }:  shape { shape }, porosity { porosity }, blobiness { blobiness }, noise { noise }')
+    print(f'shape { shape }, porosity { porosity }, blobiness { blobiness }, noise { noise }')
 
     phantom = porespy.generators.blobs(shape, porosity=porosity, blobiness=blobiness)
     phantom = porespy.filters.trim_floating_solid(phantom)
