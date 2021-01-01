@@ -3,6 +3,9 @@ import phantom_generator as pg
 import pandas as pd
 from sklearn import datasets, linear_model
 
+from scipy.ndimage import label
+from skimage.measure import regionprops
+
 
 def split_arr_to_zeros_and_ones_sizes(arr):
     edge_indeces = np.argwhere(~(np.diff(arr) == 0)).flatten() +1
@@ -52,7 +55,14 @@ def get_row_stats(phantom, row_numbers, axis=0):
 
     stat_ones, stat_zeros = np.concatenate(stat_ones), np.concatenate(stat_zeros)
 
-    return stat_zeros, stat_ones 
+    return stat_zeros, stat_ones
+
+
+def get_volume_stats(sample_volume, axis=0):
+    labels, _ = label(~sample_volume)
+    regions=regionprops(labels)
+    volumes = [r.area for r in regions if r.area>1]
+    return volumes
 
 
 def generate_train_data(stat_counting_function,
