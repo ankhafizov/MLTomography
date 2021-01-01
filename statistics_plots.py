@@ -12,6 +12,9 @@ def compare_stats(stats, names_of_stats, num_bins=50):
 
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(5*ncols, 5*nrows), constrained_layout=True)
 
+    if ncols==1:
+        axes = [[ax] for ax in axes]
+
     for ax, stat, title in zip(axes[0], stats, names_of_stats):
         sns.histplot(stat, bins=num_bins, ax=ax).set_title(title+f" std: {np.std(stat):.2f}")
 
@@ -36,8 +39,8 @@ def compare_stats(stats, names_of_stats, num_bins=50):
                      ax=ax).set_title(f'cumulative density {title}')
 
         percetile = 90
-        length_percetile = np.percentile(stat, percetile)
-        ax.axhline(0.9, color='red', linewidth=3, label=f"{percetile} percetile: x={length_percetile}")
+        size_percetile = np.percentile(stat, percetile)
+        ax.axhline(0.9, color='red', linewidth=3, label=f"{percetile} percetile: x={size_percetile:.2f}")
         ax.axvline(length_percetile, color='red', linewidth=3)
         ax.legend(loc=4)
 
