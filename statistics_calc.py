@@ -58,7 +58,7 @@ def get_row_stats(phantom, row_numbers, axis=0):
     return stat_zeros, stat_ones
 
 
-def get_volume_stats(sample_volume, axis=0):
+def get_volume_stats(sample_volume):
     labels, _ = label(~sample_volume)
     regions=regionprops(labels)
     volumes = [r.area for r in regions if r.area>1]
@@ -80,8 +80,8 @@ def generate_train_data(stat_counting_function,
                 phantom = pg.gen_phantom(shape, porosity=porosity, blobiness=blobiness)
                 if stat_counting_function == get_row_stats:
                     hist_mean = np.mean(stat_counting_function(phantom, row_numbers, axis=axis)[0])
-                else:
-                    pass
+                elif stat_counting_function == get_volume_stats:
+                    hist_mean = np.median(stat_counting_function(phantom))
                 train_dataframe = train_dataframe.append({'porosity': porosity,
                                                           'blobiness': blobiness,
                                                           'hist_mean': hist_mean},
@@ -125,7 +125,7 @@ def find_blobiness(bin_image,
         hist_mean = np.mean(stat_counting_function(bin_image,
                                                    row_numbers,
                                                    axis=axis)[stat_type_for_rows])
-    else:
-        pass
+    elif stat_counting_function == get_volume_stats:
+        hist_mean = np.median(stat_counting_function(bin_image))
 
     return (hist_mean - regression_coefs[0] - porosity*regression_coefs[1]) / regression_coefs[2]
