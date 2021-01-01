@@ -67,7 +67,7 @@ def color_labeled_pores(bin_img):
     return fig
 
 
-def compare_stats(stats, names_of_stats, num_bins=50):
+def compare_stats(stats, names_of_stats, num_bins=50, add_characteristics="mean"):
     nrows = 3
     ncols = len(stats)
 
@@ -79,8 +79,12 @@ def compare_stats(stats, names_of_stats, num_bins=50):
     for ax, stat, title in zip(axes[0], stats, names_of_stats):
         sns.histplot(stat, bins=num_bins, ax=ax).set_title(title+f" std: {np.std(stat):.2f}")
 
-        mean = np.mean(stat)
-        ax.axvline(mean, color='red', linewidth=3, label=f"mean: {mean:.2f}")
+        if add_characteristics=="mean":
+            mean = np.mean(stat)
+            ax.axvline(mean, color='red', linewidth=3, label=f"mean: {mean:.2f}")
+        elif add_characteristics=="median":
+            median = np.median(stat)
+            ax.axvline(median, color='red', linewidth=3, label=f"median: {median:.2f}")
 
         mode_value = int(mode(stat)[0])
         ax.axvline(mode_value, color='purple', linewidth=2, label=f"mode: {mode_value:.2f}")
