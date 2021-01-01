@@ -72,19 +72,19 @@ def generate_train_data(stat_counting_function,
                         sample_count=10,
                         row_numbers="all",
                         axis="Both"):
-    train_dataframe = pd.DataFrame(columns = ['porosity', 'blobiness', 'hist_mean'])
+    train_dataframe = pd.DataFrame(columns = ['porosity', 'blobiness', 'hist_characteristical_number'])
 
     for _ in range(sample_count):
         for porosity in porosities:
             for blobiness in blobinesses:
                 phantom = pg.gen_phantom(shape, porosity=porosity, blobiness=blobiness)
                 if stat_counting_function == get_row_stats:
-                    hist_mean = np.mean(stat_counting_function(phantom, row_numbers, axis=axis)[0])
+                    hist_characteristical_number = np.mean(stat_counting_function(phantom, row_numbers, axis=axis)[0])
                 elif stat_counting_function == get_volume_stats:
-                    hist_mean = np.median(stat_counting_function(phantom))
+                    hist_characteristical_number = np.median(stat_counting_function(phantom))
                 train_dataframe = train_dataframe.append({'porosity': porosity,
                                                           'blobiness': blobiness,
-                                                          'hist_mean': hist_mean},
+                                                          'hist_characteristical_number': hist_characteristical_number},
                                                            ignore_index=True)
     return train_dataframe
 
@@ -98,8 +98,8 @@ def extract_data_from_dataframe(df):
     train_data = []
     for p, b in all_porosity_blobns_pairs:
         diabetes_Y_train = df.loc[(df["porosity"]==p) & \
-                                  (df["blobiness"]==b)]["hist_mean"].to_numpy()
-        train_data += [[p, int(b), hist_mean] for hist_mean in diabetes_Y_train]
+                                  (df["blobiness"]==b)]["hist_characteristical_number"].to_numpy()
+        train_data += [[p, int(b), hist_characteristical_number] for hist_characteristical_number in diabetes_Y_train]
     train_data = np.asarray(train_data).T
     return train_data
 
@@ -122,10 +122,10 @@ def find_blobiness(bin_image,
                    axis="Both",
                    stat_type_for_rows=0):
     if stat_counting_function == get_row_stats:
-        hist_mean = np.mean(stat_counting_function(bin_image,
+        hist_characteristical_number = np.mean(stat_counting_function(bin_image,
                                                    row_numbers,
                                                    axis=axis)[stat_type_for_rows])
     elif stat_counting_function == get_volume_stats:
-        hist_mean = np.median(stat_counting_function(bin_image))
+        hist_characteristical_number = np.median(stat_counting_function(bin_image))
 
-    return (hist_mean - regression_coefs[0] - porosity*regression_coefs[1]) / regression_coefs[2]
+    return (hist_characteristical_number - regression_coefs[0] - porosity*regression_coefs[1]) / regression_coefs[2]
