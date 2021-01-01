@@ -102,7 +102,7 @@ def compare_stats(stats, names_of_stats, num_bins=50):
         percetile = 90
         size_percetile = np.percentile(stat, percetile)
         ax.axhline(0.9, color='red', linewidth=3, label=f"{percetile} percetile: x={size_percetile:.2f}")
-        ax.axvline(length_percetile, color='red', linewidth=3)
+        ax.axvline(size_percetile, color='red', linewidth=3)
         ax.legend(loc=4)
 
     return fig
