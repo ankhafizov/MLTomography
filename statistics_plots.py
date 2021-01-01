@@ -3,8 +3,69 @@ import numpy as np
 import seaborn as sns
 import statistics_calc as sc
 from scipy.stats import mode
+from scipy.ndimage import label
+import colorsys
+import numpy as np
+from matplotlib import colors, colorbar
 
 sns.set_theme()
+
+def _rand_cmap(nlabels, type='bright', first_color_black=True, last_color_black=False, verbose=True):
+
+    # Generate color map for bright colors, based on hsv
+    if type == 'bright':
+        randHSVcolors = [(np.random.uniform(low=0.0, high=1),
+                          np.random.uniform(low=0.2, high=1),
+                          np.random.uniform(low=0.9, high=1)) for i in range(nlabels)]
+
+        # Convert HSV list to RGB
+        randRGBcolors = []
+        for HSVcolor in randHSVcolors:
+            randRGBcolors.append(colorsys.hsv_to_rgb(HSVcolor[0], HSVcolor[1], HSVcolor[2]))
+
+        if first_color_black:
+            randRGBcolors[0] = [0, 0, 0]
+
+        if last_color_black:
+            randRGBcolors[-1] = [0, 0, 0]
+
+        random_colormap = colors.LinearSegmentedColormap.from_list('new_map', randRGBcolors, N=nlabels)
+
+    # Generate soft pastel colors, by limiting the RGB spectrum
+    if type == 'soft':
+        low = 0.6
+        high = 0.95
+        randRGBcolors = [(np.random.uniform(low=low, high=high),
+                          np.random.uniform(low=low, high=high),
+                          np.random.uniform(low=low, high=high)) for i in range(nlabels)]
+
+        if first_color_black:
+            randRGBcolors[0] = [0, 0, 0]
+
+        if last_color_black:
+            randRGBcolors[-1] = [0, 0, 0]
+        random_colormap = colors.LinearSegmentedColormap.from_list('new_map', randRGBcolors, N=nlabels)
+
+    return random_colormap
+
+
+def color_labeled_pores(bin_img):
+    fig, axes = plt.subplots(ncols=2, figsize=(14,7))
+    axes[0].imshow(bin_img, cmap='gray')
+
+    labels, _ = label(~bin_img)
+    my_cmap = _rand_cmap(np.max(labels),
+                         type='bright',
+                         first_color_black=True,
+                         last_color_black=False,
+                         verbose=True)
+    axes[1].imshow(labels, cmap=my_cmap)
+
+    for ax in axes:
+        ax.axis("off")
+
+    return fig
+
 
 def compare_stats(stats, names_of_stats, num_bins=50):
     nrows = 3
