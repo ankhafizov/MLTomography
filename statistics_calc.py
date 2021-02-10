@@ -71,8 +71,10 @@ def generate_train_data(stat_counting_function,
                         shape=[1000, 1000],
                         sample_count=10,
                         row_numbers="all",
+                        volume_to_diameters=False,
                         axis="Both"):
     train_dataframe = pd.DataFrame(columns = ['porosity', 'blobiness', 'hist_characteristical_number'])
+    get_radii = lambda volumes: np.sqrt(np.asarray(volumes) / np.pi)
 
     for _ in range(sample_count):
         for porosity in porosities:
@@ -81,7 +83,8 @@ def generate_train_data(stat_counting_function,
                 if stat_counting_function == get_row_stats:
                     hist_characteristical_number = np.mean(stat_counting_function(phantom, row_numbers, axis=axis)[0])
                 elif stat_counting_function == get_volume_stats:
-                    hist_characteristical_number = np.median(stat_counting_function(phantom))
+                    stats = stat_counting_function(phantom)
+                    hist_characteristical_number = np.median(get_radii(stats)) if volume_to_diameters else np.median(stats)
                 train_dataframe = train_dataframe.append({'porosity': porosity,
                                                           'blobiness': blobiness,
                                                           'hist_characteristical_number': hist_characteristical_number},
@@ -120,12 +123,15 @@ def find_blobiness(bin_image,
                    regression_coefs,
                    row_numbers="all",
                    axis="Both",
+                   volume_to_diameters=False,
                    stat_type_for_rows=0):
     if stat_counting_function == get_row_stats:
         hist_characteristical_number = np.mean(stat_counting_function(bin_image,
-                                                   row_numbers,
-                                                   axis=axis)[stat_type_for_rows])
+                                               row_numbers,
+                                               axis=axis)[stat_type_for_rows])
     elif stat_counting_function == get_volume_stats:
-        hist_characteristical_number = np.median(stat_counting_function(bin_image))
+        get_radii = lambda volumes: np.sqrt(np.asarray(volumes) / np.pi)
+        stats = stat_counting_function(bin_image)
+        hist_characteristical_number = np.median(get_radii(stats)) if volume_to_diameters else np.median(stats)
 
     return (hist_characteristical_number - regression_coefs[0] - porosity*regression_coefs[1]) / regression_coefs[2]
