@@ -36,8 +36,6 @@ def save_data(df, file_name):
 
     file_path = os.path.join(SCRIPT_PATH, DATA_FOLDER_NAME, file_name)
 
-    if file_name == TRAIN_DATA_FILENAME:
-        raise ValueError(f"Name file_name={TRAIN_DATA_FILENAME} constricted")
     if os.path.exists(file_path):
         os.remove(file_path)
 
