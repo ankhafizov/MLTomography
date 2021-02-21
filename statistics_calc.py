@@ -100,6 +100,7 @@ def get_row_statistics(phantom, row_numbers, axis=0):
             stat_ones.append(segments_ones)
 
     stat_ones, stat_zeros = np.concatenate(stat_ones), np.concatenate(stat_zeros)
+    stat_zeros = stat_zeros[stat_zeros>3]
 
     return stat_zeros, stat_ones
 
