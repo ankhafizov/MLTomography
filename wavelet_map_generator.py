@@ -1,6 +1,9 @@
+import pandas as pd
+import phantom_generator as pg
+import data_manager as dm
+
 import matplotlib.pyplot as plt
 import numpy as np
-import phantom_generator as pg
 from scipy import signal, stats
 
 WAVELET = signal.ricker
@@ -60,13 +63,23 @@ def get_wavelet_widths_for_fixed_porosity(porosity,
 
 
 if __name__ == '__main__':
+    df = pd.DataFrame(columns = ['porosity',
+                                 'characteristical_pore_length',
+                                 'wavelet_width',
+                                 'wavelet_width_std'])
     porosities = [0.2, 0.3]
     characteristical_pore_lengths = [5, 10]
     
     phantom_shape = (50, 50)
 
     for porosity in porosities:
-        mpw, spw = get_wavelet_widths_for_fixed_porosity(porosity, 
-                                                         characteristical_pore_lengths,
-                                                         phantom_shape)
-        print(mpw, spw)
+        widths, std_widths = get_wavelet_widths_for_fixed_porosity(porosity, 
+                                                                   characteristical_pore_lengths,
+                                                                   phantom_shape)
+        for cpl, w, std_w in zip(characteristical_pore_lengths, widths, std_widths):
+            df = df.append({'porosity': porosity,
+                            'characteristical_pore_length': cpl,
+                            'wavelet_width': w,
+                            'wavelet_width_std': std_w}, ignore_index=True)
+
+    dm.save_dataframe(df, "cpl_width.csv")
