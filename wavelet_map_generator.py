@@ -55,7 +55,7 @@ def get_wavelet_widths_for_fixed_porosity(porosity,
         phantom_widths = [] 
         for _ in range(attempts):
             phantom = pg.gen_phantom(phantom_shape, porosity, cpl)
-            phantom_widths.append(get_width_phantom(phantom, plot_stat=False))
+            phantom_widths.append(get_width_phantom(phantom))
     
         mean_phantom_width.append(np.mean(phantom_widths))
         std_phantom_width.append(np.std(phantom_widths))
