@@ -24,7 +24,7 @@ def get_width_of_a_row(sig):
     return np.argmax(pearsons)
 
 
-def get_width_phantom(phantom, plot_stat=True):
+def get_width_phantom(phantom):
     """
     прохожу по всем рядам и возвращаю медиану
     """
