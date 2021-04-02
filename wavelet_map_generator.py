@@ -1,6 +1,7 @@
-import pandas as pd
+
 import phantom_generator as pg
 import data_manager as dm
+import pandas as pd
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -67,10 +68,10 @@ if __name__ == '__main__':
                                  'characteristical_pore_length',
                                  'wavelet_width',
                                  'wavelet_width_std'])
-    porosities = [0.2, 0.3]
-    characteristical_pore_lengths = [5, 10]
+    porosities = [0.1, 0.2, 0.3, 0.4, 0.5, 0.9]
+    characteristical_pore_lengths = [5, 10, 15, 20, 25, 30]
     
-    phantom_shape = (50, 50)
+    phantom_shape = (500, 500)
 
     for porosity in porosities:
         widths, std_widths = get_wavelet_widths_for_fixed_porosity(porosity, 
@@ -82,4 +83,4 @@ if __name__ == '__main__':
                             'wavelet_width': w,
                             'wavelet_width_std': std_w}, ignore_index=True)
 
-    dm.save_dataframe(df, "cpl_width.csv")
+            dm.save_dataframe(df, "cpl_width.csv")
