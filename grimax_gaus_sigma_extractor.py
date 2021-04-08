@@ -21,8 +21,7 @@ def hist_fit(element_lengths, edges):
 
 def calc_sigma(element_lengths):
     if len(element_lengths) == 0:
-        print(f'empty element_lengths')
-        return 0, 0
+        return 0, 0, 0
     max_value = np.max(element_lengths)
     hist, edges = np.histogram(element_lengths, bins=max_value)
     ma_size = (np.max(element_lengths) // 100) or 1
@@ -47,17 +46,7 @@ def calc_sigma(element_lengths):
 k = np.sqrt(2 * np.log(np.e))
 
 
-def sigma_estimate_2(size=10_000_000, sigma=1, porosity=0.5):
-
-    range = np.arange(size)
-    noise_image = np.random.random(size)
-    image = ndimage.gaussian_filter(noise_image, sigma=sigma, truncate=4)
-    
-    eq_image = cv2.normalize(image, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-    eq_image = cv2.equalizeHist(eq_image)
-    eq_image = eq_image / np.max(eq_image)
-
-    bin_image = eq_image >= porosity
+def sigma_estimate_2(bin_image):
 
     borders = bin_image[1:] != bin_image[:-1]
     borders = np.append(borders, True)
@@ -70,11 +59,6 @@ def sigma_estimate_2(size=10_000_000, sigma=1, porosity=0.5):
 
     false_elements = filter(lambda x: x[0] == False, line_elements)
     false_element_lengths = np.array([len(elem) for elem in false_elements])
-    
-    if len(true_element_lengths) == 0 or len(false_element_lengths) == 0:
-        print(f'line_elements: {line_elements}')
-        print(f'true_elements: {true_elements}')
-        print(f'false_elements: {false_elements}')
 
     true_sigma_h, true_sigma_ma, true_sigma_fit = calc_sigma(true_element_lengths)
     false_sigma_h, false_sigma_ma, false_sigma_fit = calc_sigma(false_element_lengths)
