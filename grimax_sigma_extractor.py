@@ -44,17 +44,6 @@ def sigma_estimate(size=10_000_000, sigma=1):
     return calc_sigma_hist, calc_sigma_ma#, csh, csm
 
 
-x = []
-y_h = []
-y_m = []
-y_h_1 = []
-y_m_1 = []
-y_h_2 = []
-y_m_2 = []
-k1 = np.sqrt(2 * np.log(2))
-k2 = np.sqrt(2)
-
-
 def processing_sigma(sigma):
     sigma_e = sigma_estimate(sigma=sigma)
     x.append(sigma)
@@ -65,23 +54,6 @@ def processing_sigma(sigma):
     y_h_2.append(sigma_e[0] * k2)
     y_m_2.append(sigma_e[1] * k2)
     print(f'sigma: {sigma}, calc: {sigma_e}')
-
-
-for sigma in np.arange(1, 10, 1, dtype=np.int):
-    processing_sigma(sigma)
-    
-for sigma in np.arange(10, 101, 10, dtype=np.int):
-    processing_sigma(sigma)
-
-
-plt.figure(figsize=(10, 10))
-plt.plot(x, x, color='gray')
-plt.scatter(x, y_h, color='blue')
-plt.scatter(x, y_m, color='red')
-plt.scatter(x, y_h_1, color='blue', marker='+')
-plt.scatter(x, y_m_1, color='red', marker='+')
-plt.scatter(x, y_h_2, color='blue', marker='x')
-plt.scatter(x, y_m_2, color='red', marker='x')
 
 
 def calc_sigma(element_lengths):
