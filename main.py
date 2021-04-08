@@ -1,5 +1,6 @@
 import wavelet_cpl_extractor as wce
-import grimax_cpl_extractor as gce
+import grimax_sigma_extractor as gse
+import grimax_gaus_sigma_extractor as gse_gaus
 import pandas as pd
 import phantom_generator as pg
 import data_manager as dm
@@ -23,15 +24,18 @@ if __name__ == "__main__":
         for phantom_sigma in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
             phantom = ~pg.gen_phantom(phantom_shape, phantom_porosity, phantom_sigma)
             
-            for method_name in ["anvar", "grimax"]:
+            for method_name in ["anvar", "grimax", "grimax_gaus"]:
                 #### main body ####
                 start = timeit.default_timer()
 
-                extractor_func = wce.extract_cpl if method_name == "anvar" else gce.sigma_estimate_2
-
-                if method_name == "grimax":
+                if method_name == "anvar":
+                    extractor_func = wce.extract_cpl
+                elif method_name == "grimax":
                     phantom = phantom.T
-                print(phantom)
+                    gse.sigma_estimate_2
+                elif method_name == "grimax_gaus":
+                    phantom = phantom.T
+                    gse_gaus.sigma_estimate_2
 
                 #TODO: put magic_coef in other script
                 magic_coef = 1.6 if method_name == "anvar" else 1
