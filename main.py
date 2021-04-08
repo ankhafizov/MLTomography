@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
     phantom_shape = [1, 1_000_000]
 
-    for phantom_porosity in [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]:
-        for phantom_sigma in [10, 12.5, 15, 17.5, 20, 22.5, 25]:
+    for phantom_porosity in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
+        for phantom_sigma in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
             phantom = ~pg.gen_phantom(phantom_shape, phantom_porosity, phantom_sigma)
             
             for method_name in ["anvar", "grimax"]:
