@@ -26,15 +26,16 @@ if __name__ == "__main__":
             for method_name in ["anvar", "grimax"]:
                 #### main body ####
                 start = timeit.default_timer()
-                
-                #TODO: add grimax
+
                 extractor_func = wce.extract_cpl if method_name == "anvar" else gce.sigma_estimate_2
 
                 if method_name == "grimax":
                     phantom = phantom.T
                 print(phantom)
 
-                calculated_sigma = extractor_func(phantom)
+                #TODO: put magic_coef in other script
+                magic_coef = 1.6 if method_name == "anvar" else 1
+                calculated_sigma = extractor_func(phantom) / magic_coef
                 
                 stop = timeit.default_timer()
                 #### main body ####
