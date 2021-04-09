@@ -29,7 +29,8 @@ def find_pore_length(map_df, porosity, wavelet_width):
         closest_widths = find_closest_values_in_df(map_df[map_df.porosity==p], 'wavelet_width', wavelet_width)
         for w in closest_widths:
             condition = np.logical_and(map_df.porosity==p, map_df.wavelet_width==w)
-            pore_length_w.append(int(map_df.loc[condition, 'wavelet_width']))
+            length_series = map_df.loc[condition, 'wavelet_width']
+            pore_length_w.append(int(length_series.to_numpy()[0]))
         pore_lengths.append(find_y_between(*closest_widths, *pore_length_w, wavelet_width))
     
     pore_length = find_y_between(*closest_porosities, *pore_lengths, porosity)
