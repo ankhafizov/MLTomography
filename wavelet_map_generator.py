@@ -64,12 +64,13 @@ def get_wavelet_widths_for_fixed_porosity(porosity,
 
 
 if __name__ == '__main__':
-    df = pd.DataFrame(columns = ['porosity',
-                                 'characteristical_pore_length',
-                                 'wavelet_width',
-                                 'wavelet_width_std'])
+    # df = pd.DataFrame(columns = ['porosity',
+    #                              'characteristical_pore_length',
+    #                              'wavelet_width',
+    #                              'wavelet_width_std'])
+    df = dm.load_dataframe("cpl_width.csv")
     porosities = [0.1, 0.2, 0.3, 0.4, 0.5]
-    characteristical_pore_lengths = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    characteristical_pore_lengths = [3, 5, 15]#, 30, 40, 50, 60, 70, 80, 90, 100]
     
     phantom_shape = (500, 500)
 
