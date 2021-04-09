@@ -68,7 +68,7 @@ if __name__ == '__main__':
                                  'characteristical_pore_length',
                                  'wavelet_width',
                                  'wavelet_width_std'])
-    porosities = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    porosities = [0.1, 0.2, 0.3, 0.4, 0.5]
     characteristical_pore_lengths = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     
     phantom_shape = (500, 500)
