@@ -48,7 +48,7 @@ def get_wavelet_width_for_2d_image(bin_img, axis=0):
     return np.median(wavelet_widths)
 
 
-def test_get_wavelet_width_for_sample(porosity, sigma, shape):
+def get_wavelet_width_for_sample(porosity, sigma, shape):
     attempts=5
 
     phantom_width = []
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     for sigma in sigmas:
         for porosity in porosities:
-            wavelet_width = test_get_wavelet_width_for_sample(porosity, 
+            wavelet_width = get_wavelet_width_for_sample(porosity, 
                                                               sigma,
                                                               shape)
 
