@@ -2,6 +2,7 @@
 import numpy as np
 import scipy
 import pandas as pd
+import json
 from progress.bar import Bar
 
 import MLTomography.phantom_generator as pg
@@ -47,28 +48,44 @@ def get_wavelet_width_for_2d_image(bin_img_2d, axis=0):
     return np.median(wavelet_widths)
 
 
+def test_get_wavelet_width_for_sample(porosity, sigma, shape):
+    attempts=5
+
+    phantom_width = []
+
+    for _ in range(attempts):
+        phantom = pg.gen_phantom(shape, porosity, sigma)
+        phantom_width.append(get_wavelet_width_for_2d_image(phantom))
+
+    return np.mean(phantom_width)
+
+
 if __name__ == '__main__':
-    df = pd.DataFrame(columns = ['porosity',
-                                 'characteristical_pore_length',
-                                 'wavelet_width',
-                                 'wavelet_width_std'])
-    df = dm.load_dataframe("cpl_width.csv")
     porosities = [0.1, 0.2, 0.3, 0.4, 0.5]
-    characteristical_pore_lengths = [3, 5, 15, 30, 40, 50, 60, 70, 80, 90, 100]
+    sigmas = [3, 5, 15, 30, 40, 50, 60, 70, 80, 90, 100]
+    shape = (500, 500)
+
+    map_file_name = json.load(open('constants.json'))["wavelet_map_name"] 
     
-    phantom_shape = (500, 500)
-    bar = Bar('Processing', max=len(porosities)*len(characteristical_pore_lengths))
+    df = pd.DataFrame(columns = ['porosity',
+                                 'sigma',
+                                 'wavelet_width'])
 
-    for porosity in porosities:
-        widths, std_widths = get_wavelet_widths_for_fixed_porosity(porosity, 
-                                                                   characteristical_pore_lengths,
-                                                                   phantom_shape)
-        for cpl, w, std_w in zip(characteristical_pore_lengths, widths, std_widths):
+    # df = dm.load_dataframe(map_file_name)
+    
+    bar = Bar('Processing', max=len(sigmas)*len(porosities))
+
+    for sigma in sigmas:
+        for porosity in porosities:
+            wavelet_width = test_get_wavelet_width_for_sample(porosity, 
+                                                              sigma,
+                                                              shape)
+
             df = df.append({'porosity': porosity,
-                            'characteristical_pore_length': cpl,
-                            'wavelet_width': w,
-                            'wavelet_width_std': std_w}, ignore_index=True)
+                            'sigma': sigma,
+                            'wavelet_width': wavelet_width},
+                           ignore_index=True)
 
-            dm.save_dataframe(df, "cpl_width.csv")
+            dm.save_dataframe(df, map_file_name)
 
             bar.next()
