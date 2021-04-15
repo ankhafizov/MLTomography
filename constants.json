@@ -1,3 +1,4 @@
 {
-    "wavelet_map_name":"cpl_width.csv"
+    "wavelet_map_name":"cpl_width.csv",
+    "wavelet_sigma_coefficient": 1.6
 }
