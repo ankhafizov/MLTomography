@@ -8,7 +8,6 @@ sys.path.append("..")
 
 from MLTomography import wavelet_map_generator as wmg
 from MLTomography.logger import logger
-import MLTomography.phantom_generator as pg
 
 
 class TestWaveletMapGenerator(unittest.TestCase):
@@ -26,17 +25,12 @@ class TestWaveletMapGenerator(unittest.TestCase):
 
         porosity = 0.3
         sigma = 15
-        phantom_shape = [100, 100]
-        attempts=5
+        shape = [100, 100]
 
         phantom_width = []
+        width = wmg.get_wavelet_width_for_sample(porosity, sigma, shape)
 
-        for _ in range(attempts):
-            phantom = pg.gen_phantom(phantom_shape, porosity, sigma)
-            phantom_width.append(wmg.get_wavelet_width_for_2d_image(phantom))
-
-        print(np.mean(phantom_width))
-        self.assertTrue(5<np.mean(phantom_width)<25)
+        self.assertTrue(5<np.mean(width)<25)
 
 
 if __name__ == '__main__':
