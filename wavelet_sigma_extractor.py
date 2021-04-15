@@ -1,10 +1,9 @@
-import data_manager as dm
 import numpy as np
-import matplotlib.pyplot as plt
 import json
 
-import wavelet_map_generator as wmp
-import phantom_generator as pg
+import MLTomography.wavelet_map_generator as wmp
+import MLTomography.phantom_generator as pg
+import MLTomography.data_manager as dm
 
 
 def _find_y_between(x_left, x_right,
@@ -24,7 +23,7 @@ def _find_closest_values_in_df_to_target_value(wavelet_map, column_name, target_
     return unique_values[np.abs(unique_values - target_value).argsort()][:2]
 
 
-def find_sigma(wavelet_map, porosity, wavelet_width):
+def _find_sigma_from_df(wavelet_map, porosity, wavelet_width):
     closest_porosities = _find_closest_values_in_df_to_target_value(wavelet_map, 'porosity', porosity)
 
     sigmas = []
@@ -41,25 +40,16 @@ def find_sigma(wavelet_map, porosity, wavelet_width):
             sigma_w.append(int(length_series.to_numpy()[0]))
         sigmas.append(_find_y_between(*closest_widths, *sigma_w, wavelet_width))
     
-    sigma = _find_y_between(*closest_porosities, *sigmas, porosity)
+    coeff = json.load(open('constants.json'))["wavelet_sigma_coefficient"] 
+    sigma = _find_y_between(*closest_porosities, *sigmas, porosity) / coeff
 
     return sigma
 
 
-def extract_cpl(bin_img):
+def get_sigma(img, porosity):
     map_file_name = json.load(open('constants.json'))["wavelet_map_name"] 
     df = dm.load_dataframe(map_file_name)
-    
-    porosity = np.sum(bin_img) / bin_img.size
-    width = wmp.get_width_phantom(bin_img)
 
-    return find_sigma(df, porosity, width)
+    width = wmp.get_wavelet_width_for_2d_image(img)
 
-
-if __name__ == "__main__":
-    phantom_shape = [500, 500]
-    porosity = 0.3
-    cpl = 15
-
-    phantom = ~pg.gen_phantom(phantom_shape, porosity, cpl)
-    print(extract_cpl(phantom))
+    return _find_sigma_from_df(df, porosity, width)
