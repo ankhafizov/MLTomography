@@ -18,7 +18,7 @@ def invert_signal(sig):
 
 
 def get_width_of_a_row(sig):
-    widths = np.arange(1, 130)
+    widths = np.arange(1, 200)
     cwtmatr = signal.cwt(sig, WAVELET, widths)
     pearsons = [stats.pearsonr(row, sig)[0] for row in cwtmatr]
     plt.plot(pearsons)
