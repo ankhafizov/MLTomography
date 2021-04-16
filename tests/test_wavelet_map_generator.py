@@ -3,11 +3,11 @@ import unittest
 from scipy import signal
 import numpy as np
 
+import icecream as ic
 import sys, os
 sys.path.append("..")
 
 from MLTomography import wavelet_map_generator as wmg
-from MLTomography.logger import logger
 
 
 class TestWaveletMapGenerator(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestWaveletMapGenerator(unittest.TestCase):
         sig = signal.square(2 * np.pi * 5 * t)
 
         width = wmg.get_wavelet_width_of_row_signal(sig, max_width=200)
-        logger.debug(f"calculated width: {width}| ground truth: 11")
+        ic.ic(width, 10<=width<=12)
 
         self.assertTrue(10<=width<=12)
 

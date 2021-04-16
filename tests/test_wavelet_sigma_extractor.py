@@ -7,7 +7,6 @@ import sys, os
 sys.path.append("..")
 
 from MLTomography import wavelet_sigma_extractor as wse
-from MLTomography.logger import logger
 import MLTomography.phantom_generator as pg
 
 import icecream as ic
