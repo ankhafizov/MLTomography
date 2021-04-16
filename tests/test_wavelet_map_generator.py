@@ -28,9 +28,9 @@ class TestWaveletMapGenerator(unittest.TestCase):
         shape = [100, 100]
 
         phantom_width = []
-        width = wmg.get_wavelet_width_for_sample(porosity, sigma, shape)
+        phantom_width.append(wmg.get_wavelet_width_for_sample(porosity, sigma, shape))
 
-        self.assertTrue(5<np.mean(width)<25)
+        self.assertTrue(5<np.mean(phantom_width)<25)
 
 
 if __name__ == '__main__':
