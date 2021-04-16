@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     for phantom_porosity in porosities:
         for phantom_sigma in sigmas:
-            phantom = ~pg.gen_phantom(phantom_shape, phantom_porosity, phantom_sigma)
+            phantom = ~pg.generate_phantom(phantom_shape, phantom_porosity, phantom_sigma)
             phantom = sp_noise(phantom, 0.01).astype(bool)
             
             for method_name in ["anvar", 

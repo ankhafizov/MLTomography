@@ -54,7 +54,7 @@ def get_wavelet_width_for_sample(porosity, sigma, shape):
     phantom_width = []
 
     for _ in range(attempts):
-        phantom = pg.gen_phantom(shape, porosity, sigma)
+        phantom = pg.generate_phantom(shape, porosity, sigma)
         phantom_width.append(get_wavelet_width_for_2d_image(phantom))
 
     return np.mean(phantom_width)

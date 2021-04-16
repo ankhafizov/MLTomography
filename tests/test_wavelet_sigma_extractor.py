@@ -18,7 +18,7 @@ class TestWaveletSigmaExtractor(unittest.TestCase):
         porosity=0.5
         sigma=15
 
-        phantom = pg.gen_phantom(shape, porosity, sigma)
+        phantom = pg.generate_phantom(shape, porosity, sigma)
         sigma_extracted = wse.get_sigma(phantom, porosity)
         ic.ic(sigma_extracted)
 
