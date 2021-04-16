@@ -63,7 +63,7 @@ def get_wavelet_width_for_sample(porosity, sigma, shape):
 if __name__ == '__main__':
     porosities = [0.1, 0.2, 0.3, 0.4, 0.5]
     sigmas = [3, 5, 15, 30, 40, 50, 60, 70, 80, 90, 100]
-    shape = (500, 500)
+    shape = (1, 1_000_000)
 
     map_file_name = json.load(open('constants.json'))["wavelet_map_name"] 
     
