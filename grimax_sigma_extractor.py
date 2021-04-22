@@ -52,7 +52,6 @@ def get_sigma(bin_image, mode):
     mode = "default", "smoothed", "gaus"
     """
 
-    ic.ic("flattening bin image")
     bin_image = bin_image.flatten()
 
     borders = bin_image[1:] != bin_image[:-1]
