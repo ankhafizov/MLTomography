@@ -46,7 +46,7 @@ def _calc_sigma_from_length_distribution(element_lengths):
 
 # Макс, если будешь менять этот скрипт, то именно эта функция главное звено,
 # которое используется в main и других скриптах. Связывайте, пожалуйста, через нее
-def sigma_estimate_smoothed_histogram(bin_image, mode):
+def get_sigma(bin_image, mode):
     """
     Функция используется для оценки сигмы
     mode = "default", "smoothed", "gaus"
