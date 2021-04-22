@@ -51,7 +51,7 @@ def sigma_estimate_smoothed_histogram(bin_image, mode):
     """
 
     ic.ic("flattening bin image")
-    bin_image = bin_image.flatten
+    bin_image = bin_image.flatten()
 
     borders = bin_image[1:] != bin_image[:-1]
     borders = np.append(borders, True)
