@@ -1,85 +1,91 @@
-import pandas as pd
-import phantom_generator as pg
-import data_manager as dm
 
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy import signal, stats
+import scipy
+import pandas as pd
+import json
+from progress.bar import Bar
 
-WAVELET = signal.ricker
+import MLTomography.phantom_generator as pg
+import MLTomography.data_manager as dm
+from MLTomography.helper import invert_signal
 
 
-def invert_signal(sig):
-    sig = sig.astype(int) if sig.dtype==bool else sig
-    return sig.max() - sig
+WAVELET_TYPE = scipy.signal.ricker #mexican hat
 
 
-def get_width_of_a_row(sig):
-    widths = np.arange(1, 50)
-    cwtmatr = signal.cwt(sig, WAVELET, widths)
-    pearsons = [stats.pearsonr(row, sig)[0] for row in cwtmatr]
-    plt.plot(pearsons)
+def get_wavelet_width_of_row_signal(signal, max_width=200):
+    # TODO: add optimizer to find pearson maximum
+    get_pearson_corrcoef = lambda x1, x2: scipy.stats.pearsonr(x1, x2)[0]
+    
+    possible_widths = np.arange(1, max_width)
+    wavelet_rows = scipy.signal.cwt(signal, WAVELET_TYPE, possible_widths)
+    pearsons = [get_pearson_corrcoef(row, signal) for row in wavelet_rows]
 
     return np.argmax(pearsons)
 
 
-def get_width_phantom(phantom, plot_stat=True):
+def get_wavelet_width_for_2d_image(bin_img, axis=0):
     """
-    прохожу по всем рядам и возвращаю медиану
+    axis =0, 1 or "all"
     """
+    bin_img = np.asarray(bin_img)
+    wavelet_widths = []
 
-    widths = []
+    if axis == 0:
+        pass
+    elif axis == 1:
+        bin_img = bin_img.T
+    elif axis == "all":
+        bin_img = np.vstack((bin_img, bin_img.T))
+    else:
+        raise ValueError(f"axis must be 0, 1 or \"all\", but {axis} was given")
 
-    # все ряды по горизонтали
-    for row in phantom:
-        w = get_width_of_a_row(invert_signal(row))
-        widths.append(w)
+    for row in bin_img:
+        row = invert_signal(row) # не уверен, что это необходимо. Делаю, чтобы раскладывать именно поры по вейвлетам
+        w = get_wavelet_width_of_row_signal(row)
+        wavelet_widths.append(w)
 
-    # все ряды по вертикали если есть анизатропия (закоментил для ускорения рассчетов)
-    # for row in phantom.T:
-    #     w = get_width_of_a_row(invert_signal(row))
-    #     widths.append(w)
-
-    return np.median(widths)
+    return np.median(wavelet_widths)
 
 
-def get_wavelet_widths_for_fixed_porosity(porosity,
-                                          characteristical_pore_lengths,
-                                          phantom_shape,
-                                          attempts=5):
+def get_wavelet_width_for_sample(porosity, sigma, shape):
+    attempts=5
 
-    mean_phantom_width, std_phantom_width = [], []
+    phantom_width = []
 
-    for cpl in characteristical_pore_lengths:
-        phantom_widths = [] 
-        for _ in range(attempts):
-            phantom = pg.gen_phantom(phantom_shape, porosity, cpl)
-            phantom_widths.append(get_width_phantom(phantom, plot_stat=False))
-    
-        mean_phantom_width.append(np.mean(phantom_widths))
-        std_phantom_width.append(np.std(phantom_widths))
+    for _ in range(attempts):
+        phantom = pg.generate_phantom(shape, porosity, sigma)
+        phantom_width.append(get_wavelet_width_for_2d_image(phantom))
 
-    return mean_phantom_width, std_phantom_width
+    return np.mean(phantom_width)
 
 
 if __name__ == '__main__':
-    df = pd.DataFrame(columns = ['porosity',
-                                 'characteristical_pore_length',
-                                 'wavelet_width',
-                                 'wavelet_width_std'])
-    porosities = [0.2, 0.3]
-    characteristical_pore_lengths = [5, 10]
+    porosities = [0.1, 0.2, 0.3, 0.4, 0.5]
+    sigmas = [3, 5, 15, 30, 40, 50, 60, 70, 80, 90, 100]
+    shape = (1, 1_000_000)
+
+    map_file_name = json.load(open('constants.json'))["wavelet_map_name"] 
     
-    phantom_shape = (50, 50)
+    df = pd.DataFrame(columns = ['porosity',
+                                 'sigma',
+                                 'wavelet_width'])
 
-    for porosity in porosities:
-        widths, std_widths = get_wavelet_widths_for_fixed_porosity(porosity, 
-                                                                   characteristical_pore_lengths,
-                                                                   phantom_shape)
-        for cpl, w, std_w in zip(characteristical_pore_lengths, widths, std_widths):
+    # df = dm.load_dataframe(map_file_name)
+    
+    bar = Bar('Processing', max=len(sigmas)*len(porosities))
+
+    for sigma in sigmas:
+        for porosity in porosities:
+            wavelet_width = get_wavelet_width_for_sample(porosity, 
+                                                              sigma,
+                                                              shape)
+
             df = df.append({'porosity': porosity,
-                            'characteristical_pore_length': cpl,
-                            'wavelet_width': w,
-                            'wavelet_width_std': std_w}, ignore_index=True)
+                            'sigma': sigma,
+                            'wavelet_width': wavelet_width},
+                           ignore_index=True)
 
-    dm.save_dataframe(df, "cpl_width.csv")
+            dm.save_dataframe(df, map_file_name)
+
+            bar.next()
