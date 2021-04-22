@@ -1,5 +1,5 @@
 import wavelet_sigma_extractor as wse
-import grimax_sigma_extractor as gse
+import grimax_sigma_extractor as grimax_se
 import pandas as pd
 import phantom_generator as pg
 import data_manager as dm
@@ -46,11 +46,11 @@ if __name__ == "__main__":
                 if method_name == "anvar":
                     calculated_sigma = wse.get_sigma(phantom, phantom_porosity)
                 elif method_name == "grimax_h":
-                    calculated_sigma = gse.get_sigma(phantom, mode="default")
+                    calculated_sigma = grimax_se.get_sigma(phantom, mode="default")
                 elif method_name == "grimax_smoothed":
-                    calculated_sigma = gse.get_sigma(phantom, mode="smoothed")
+                    calculated_sigma = grimax_se.get_sigma(phantom, mode="smoothed")
                 elif method_name == "grimax_gaus":
-                    calculated_sigma = gse.get_sigma(phantom, mode="gaus")
+                    calculated_sigma = grimax_se.get_sigma(phantom, mode="gaus")
                 
                 stop = timeit.default_timer()
                 #### main body ####
