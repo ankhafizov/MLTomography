@@ -8,11 +8,11 @@ import icecream as ic
 k = np.sqrt(2 * np.log(np.e))
 
 
-def moving_average(x, w):
+def _moving_average(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
 
 
-def hist_fit(element_lengths, edges):
+def _hist_fit(element_lengths, edges):
     fit_func = stats.invgauss
     params = fit_func.fit(element_lengths)
     fit_values = fit_func.pdf(edges, *params)
@@ -20,19 +20,19 @@ def hist_fit(element_lengths, edges):
     return max_fit_value_index
 
 
-def calc_sigma(element_lengths):
+def _calc_sigma_from_length_distribution(element_lengths):
     if len(element_lengths) == 0:
         return 0, 0, 0
     max_value = np.max(element_lengths)
     hist, edges = np.histogram(element_lengths, bins=max_value)
     ma_size = (np.max(element_lengths) // 100) or 1
-    ma = moving_average(hist, ma_size)
+    ma = _moving_average(hist, ma_size)
     max_indicies_hist = np.where(hist == np.max(hist))
     max_indicies_ma = np.where(ma == np.max(ma))
     max_x_hist = np.round(edges[max_indicies_hist[0]])
     max_x_ma = np.round(edges[max_indicies_ma[0]])
     
-    max_x_fit = hist_fit(element_lengths, edges)
+    max_x_fit = _hist_fit(element_lengths, edges)
 
     period_hist = np.mean(max_x_hist)
     calc_sigma_hist = period_hist // (2 * np.pi)
@@ -44,6 +44,8 @@ def calc_sigma(element_lengths):
     return calc_sigma_hist, calc_sigma_ma, calc_sigma_fit
 
 
+# Макс, если будешь менять этот скрипт, то именно эта функция главное звено,
+# которое используется в main и других скриптах. Связывайте, пожалуйста, через нее
 def sigma_estimate_smoothed_histogram(bin_image, mode):
     """
     Функция используется для оценки сигмы
@@ -65,8 +67,10 @@ def sigma_estimate_smoothed_histogram(bin_image, mode):
     false_elements = filter(lambda x: x[0] == False, line_elements)
     false_element_lengths = np.array([len(elem) for elem in false_elements])
 
-    true_sigma_h, true_sigma_ma, true_sigma_fit = calc_sigma(true_element_lengths)
-    false_sigma_h, false_sigma_ma, false_sigma_fit = calc_sigma(false_element_lengths)
+    true_sigma_h, true_sigma_ma, true_sigma_fit = \
+        _calc_sigma_from_length_distribution(true_element_lengths)
+    false_sigma_h, false_sigma_ma, false_sigma_fit = \
+        _calc_sigma_from_length_distribution(false_element_lengths)
 
     if mode == "default":
         return (true_sigma_h + false_sigma_h) * k
