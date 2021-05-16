@@ -8,4 +8,4 @@ def get_sigma(img, porosity):
 
     k = [-3.29261187,  4.3127627,  -1.90858856,  0.9049531 ]
     porosity = np.min([porosity, 1-porosity])
-    return (porosity**3*k[0] + porosity**2*k[1] + porosity*k[2] + k[3])*wavelet_width
+    return 0.63*wavelet_width
