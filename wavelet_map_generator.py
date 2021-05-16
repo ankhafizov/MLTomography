@@ -3,7 +3,6 @@ import numpy as np
 import scipy
 import pandas as pd
 import json
-from progress.bar import Bar
 
 import MLTomography.phantom_generator as pg
 import MLTomography.data_manager as dm
@@ -72,8 +71,6 @@ if __name__ == '__main__':
                                  'wavelet_width'])
 
     # df = dm.load_dataframe(map_file_name)
-    
-    bar = Bar('Processing', max=len(sigmas)*len(porosities))
 
     for sigma in sigmas:
         for porosity in porosities:
@@ -87,5 +84,3 @@ if __name__ == '__main__':
                            ignore_index=True)
 
             dm.save_dataframe(df, map_file_name)
-
-            bar.next()
