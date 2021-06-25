@@ -6,7 +6,6 @@ import json
 
 import MLTomography.phantom_generator as pg
 import MLTomography.data_manager as dm
-from MLTomography.helper import invert_signal
 
 
 WAVELET_TYPE = scipy.signal.ricker #mexican hat
@@ -40,47 +39,7 @@ def get_wavelet_width_for_2d_image(bin_img, axis=0):
         raise ValueError(f"axis must be 0, 1 or \"all\", but {axis} was given")
 
     for row in bin_img:
-        row = invert_signal(row) # не уверен, что это необходимо. Делаю, чтобы раскладывать именно поры по вейвлетам
         w = get_wavelet_width_of_row_signal(row)
         wavelet_widths.append(w)
 
     return np.median(wavelet_widths)
-
-
-def get_wavelet_width_for_sample(porosity, sigma, shape):
-    attempts=5
-
-    phantom_width = []
-
-    for _ in range(attempts):
-        phantom = pg.generate_phantom(shape, porosity, sigma)
-        phantom_width.append(get_wavelet_width_for_2d_image(phantom))
-
-    return np.mean(phantom_width)
-
-
-if __name__ == '__main__':
-    porosities = [0.1, 0.2, 0.3, 0.4, 0.5]
-    sigmas = [3, 5, 15, 30, 40, 50, 60, 70, 80, 90, 100]
-    shape = (1, 1_000_000)
-
-    map_file_name = json.load(open('constants.json'))["wavelet_map_name"] 
-    
-    df = pd.DataFrame(columns = ['porosity',
-                                 'sigma',
-                                 'wavelet_width'])
-
-    # df = dm.load_dataframe(map_file_name)
-
-    for sigma in sigmas:
-        for porosity in porosities:
-            wavelet_width = get_wavelet_width_for_sample(porosity, 
-                                                              sigma,
-                                                              shape)
-
-            df = df.append({'porosity': porosity,
-                            'sigma': sigma,
-                            'wavelet_width': wavelet_width},
-                           ignore_index=True)
-
-            dm.save_dataframe(df, map_file_name)
