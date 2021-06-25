@@ -12,9 +12,9 @@ import numpy as np
 
 class InputParameters():
     def __init__(self):
-        self.shape = [1000, 1000] #[1, 1_000_000]
+        self.shape = [1, 1_000_000]
         self.porosities = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-        self.sigmas = [5, 10, 15, 20, 25, 30, 35]#[10, 20, 30, 40, 50, 60, 70, 80, 90]
+        self.sigmas = [10, 20, 30, 40, 50, 60, 70, 80, 90]
         self.noise = 0 # set 0 for no noise
 
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             start = timeit.default_timer()
 
             if method_name == "anvar":
-                calculated_sigma = wse.get_sigma(phantom, phantom_porosity)
+                calculated_sigma = wse.get_sigma(phantom, phantom_porosity, mode="simple")
             elif method_name == "grimax_h":
                 calculated_sigma = grimax_se.get_sigma(phantom, mode="default")
             elif method_name == "grimax_smoothed":
