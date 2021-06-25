@@ -7,7 +7,7 @@ import icecream as ic
 import sys, os
 sys.path.append("..")
 
-from MLTomography import wavelet_map_generator as wmg
+from MLTomography import wavelet_engine as wmg
 
 
 class TestWaveletMapGenerator(unittest.TestCase):

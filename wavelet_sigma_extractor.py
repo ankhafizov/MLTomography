@@ -1,6 +1,6 @@
 import numpy as np
 
-import MLTomography.wavelet_map_generator as wmp
+import MLTomography.wavelet_engine as wmp
 
 
 def get_sigma(img, porosity, mode="simple"):
