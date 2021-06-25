@@ -14,19 +14,19 @@ WAVELET_TYPE = scipy.signal.ricker #mexican hat
 def get_wavelet_width_of_row_signal(signal, max_width=200):
     # TODO: add optimizer to find pearson maximum
     get_pearson_corrcoef = lambda x1, x2: scipy.stats.pearsonr(x1, x2)[0]
-    
-    possible_widths = np.arange(1, max_width)
-    wavelet_rows = scipy.signal.cwt(signal, WAVELET_TYPE, possible_widths)
-    pearsons = [get_pearson_corrcoef(row, signal) for row in wavelet_rows]
+    loss_func = lambda width: -get_pearson_corrcoef(signal, scipy.signal.cwt(signal, WAVELET_TYPE, [width])[0])
 
-    return np.argmax(pearsons)
+    width_optimal = scipy.optimize.minimize_scalar(loss_func, bounds=[1, 300], method='bounded').x
+
+    return width_optimal
 
 
 def get_wavelet_width_for_2d_image(bin_img, axis=0):
     """
     axis =0, 1 or "all"
     """
-    bin_img = np.asarray(bin_img)
+    
+    bin_img = np.asarray(bin_img, dtype=float)
     wavelet_widths = []
 
     if axis == 0:
